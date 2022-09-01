@@ -1,28 +1,26 @@
-const UserRepository = require('../../src/repository/UserRepository');
+/* eslint-disable no-undef */
 const UserService = require('../../src/services/UserService');
 
 const service = new UserService();
 
-jest.mock('../../src/repository/UserRepository', () => {
-  return jest.fn().mockImplementation(() => ({
-    getById: jest.fn().mockImplementation(id => {
-      if(id === 1234) return { id: 1234 }
-      return undefined
-    }),
-    getUserByEmail: jest.fn().mockImplementation(email => {
-      if(email === 'gabriel@email.com') return { id: 1234 }
-      return undefined
-    }),
-  }));
-});
+jest.mock('../../src/repository/UserRepository', () => jest.fn().mockImplementation(() => ({
+  getById: jest.fn().mockImplementation((id) => {
+    if (id === 1234) return { id: 1234 };
+    return undefined;
+  }),
+  getUserByEmail: jest.fn().mockImplementation((email) => {
+    if (email === 'gabriel@email.com') return { id: 1234 };
+    return undefined;
+  }),
+})));
 
 describe('#UserService', () => {
   describe('#getUser', () => {
     it('succes case with getUserByEmail', async () => {
       const result = await service.getUser({ email: 'gabriel@email.com' });
-  
+
       expect(result).toEqual({ id: 1234 });
-    })
+    });
 
     it('succes case with getById', async () => {
       const result = await service.getUser({ id: 1234, email: undefined });
@@ -41,7 +39,7 @@ describe('#UserService', () => {
     it('throw error if user is undefinied by getById', () => {
       const callGetUser = async () => {
         await service.getUser({ id: 2 });
-      }
+      };
 
       expect(callGetUser).rejects.toThrow(new Error('Usuário não encontrado'));
     });
@@ -49,7 +47,7 @@ describe('#UserService', () => {
     it('throw error if user is undefinied by getByUserEmail', () => {
       const callGetUser = async () => {
         await service.getUser({ email: 'narutin@gmail.com' });
-      }
+      };
 
       expect(callGetUser).rejects.toThrow(new Error('Usuário não encontrado'));
     });
